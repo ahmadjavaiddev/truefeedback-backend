@@ -71,21 +71,23 @@ const login = asyncHandler(async (req, res) => {
           "-password -refreshToken"
      );
 
-     return res
-          .status(200)
-          .cookie("accessToken", accessToken, cokkiesOptions)
-          .cookie("refreshToken", refreshToken, cokkiesOptions)
-          .json(
-               new ApiResponse(
-                    200,
-                    {
-                         user: loginUser,
-                         accessToken: accessToken,
-                         refreshToken: refreshToken,
-                    },
-                    "User Login SuccessFully."
+     return (
+          res
+               .status(200)
+               // .cookie("accessToken", accessToken, cokkiesOptions)
+               // .cookie("refreshToken", refreshToken, cokkiesOptions)
+               .json(
+                    new ApiResponse(
+                         200,
+                         {
+                              user: loginUser,
+                              accessToken: accessToken,
+                              refreshToken: refreshToken,
+                         },
+                         "User Login SuccessFully."
+                    )
                )
-          );
+     );
 });
 
 const search = asyncHandler(async (req, res) => {

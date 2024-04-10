@@ -33,7 +33,6 @@ const getMessages = asyncHandler(async (req, res) => {
      const messages = await Message.find({ messageTo: userId });
      messages.reverse();
 
-     console.log("Inside messages To Get ::", Math.random());
      if (!messages) {
           throw new ApiError(404, "No Messages Found!");
      }
