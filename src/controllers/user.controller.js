@@ -108,7 +108,7 @@ const getRandomUsers = asyncHandler(async (req, res) => {
      const users = await User.find({});
 
      const shuffledUsers = users.sort(() => Math.random() - 0.5);
-     const randomUsers = shuffledUsers.slice(0, 4);
+     const randomUsers = shuffledUsers.slice(0, 6);
 
      return res
           .status(200)
