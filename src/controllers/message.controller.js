@@ -80,19 +80,7 @@ const getAcceptMessageStatus = asyncHandler(async (req, res) => {
 
 const acceptMessage = asyncHandler(async (req, res) => {
      const userId = req.user._id;
-     // const { value } = req.body;
-
-     // if (value === undefined || value === null) {
-     //      throw new ApiError(400, "value is Required!");
-     // }
-
-     // const user = await User.findByIdAndUpdate(
-     //      userId,
-     //      {
-     //           $set: { acceptMessages: value },
-     //      },
-     //      { new: true }
-     // );
+    
      const user = await User.findById(userId);
      user.acceptMessages = !user.acceptMessages;
      await user.save({ validateBeforeSave: false });

@@ -9,7 +9,7 @@ import { upload } from "../middleware/multer.middleware.js";
 
 const router = Router();
 
-router.route("/register").post(upload.single("avatar"), register);
+router.route("/register").post(register);
 router.route("/login").post(login);
 router.route("/search").post(search);
 router.route("/random").get(getRandomUsers);
