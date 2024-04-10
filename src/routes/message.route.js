@@ -14,8 +14,8 @@ const router = Router();
 
 router.route("/create").post(createMessage);
 router.route("/").get(verifyJWT, getMessages);
-router.route("/delete/:messageId").delete(verifyJWT,deleteMessage);
-router.route("/accept").post(verifyJWT, acceptMessage);
+router.route("/delete/:messageId").delete(verifyJWT, deleteMessage);
+router.route("/accept").get(verifyJWT, acceptMessage);
 router.route("/userstatus").get(verifyJWT, getAcceptMessageStatus);
 router.route("/userstatus/:username").get(getMessageStatus);
 router.route("/generate").get(generateMessages);
