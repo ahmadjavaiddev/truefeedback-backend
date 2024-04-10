@@ -17,7 +17,7 @@ router.route("/").get(verifyJWT, getMessages);
 router.route("/delete/:messageId").delete(deleteMessage);
 router.route("/accept").post(verifyJWT, acceptMessage);
 router.route("/userstatus").get(verifyJWT, getAcceptMessageStatus);
-router.route("/userstatus/:username").get(verifyJWT, getMessageStatus);
+router.route("/userstatus/:username").get(getMessageStatus);
 router.route("/generate").get(generateMessages);
 
 export default router;
