@@ -28,6 +28,16 @@ const userSchema = new Schema(
           refreshToken: {
                type: String,
           },
+          verificationCode: {
+               type: String,
+          },
+          verificationCodeExpiry: {
+               type: Date,
+          },
+          verified: {
+               type: Boolean,
+               default: false,
+          },
      },
      {
           timestamps: true,

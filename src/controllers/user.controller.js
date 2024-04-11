@@ -2,7 +2,7 @@ import { User } from "../models/user.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import { cokkiesOptions } from "../constants.js";
+import { sendEmailToVerify } from "../utils/sendEmailToVerify.js";
 
 const generateAccessAndRefereshTokens = async (userId) => {
      try {
@@ -41,6 +41,8 @@ const register = asyncHandler(async (req, res) => {
      if (!user) {
           throw new ApiError(400, "Invalid user data");
      }
+
+     await sendEmailToVerify(email);
 
      return res
           .status(201)
@@ -116,4 +118,76 @@ const getRandomUsers = asyncHandler(async (req, res) => {
           .json(new ApiResponse(200, randomUsers, "Random Users"));
 });
 
-export { register, login, search, getRandomUsers };
+const verifyUser = asyncHandler(async (req, res) => {
+     const { verificationCode, email } = req.body;
+
+     if (!verificationCode || !email) {
+          throw new ApiError(400, "Please provide verificationCode and email!");
+     }
+
+     const user = await User.findOne({ email });
+     if (!user) {
+          throw new ApiError(400, "Verification Code Not Found!");
+     }
+
+     if (user.verificationCode !== verificationCode) {
+          throw new ApiError(400, "Invalid Verification Code!");
+     }
+
+     if (user.verificationCodeExpiry < Date.now()) {
+          throw new ApiError(400, "Verification Code Expired!");
+     }
+
+     user.verified = true;
+     user.verificationCode = null;
+     user.verificationCodeExpiry = null;
+     await user.save({ validateBeforeSave: false });
+
+     return res
+          .status(200)
+          .json(
+               new ApiResponse(
+                    200,
+                    { success: true },
+                    "Verification Code Successfully"
+               )
+          );
+});
+
+const validateUserToken = asyncHandler(async (req, res) => {
+     const { verificationCode, email } = req.body;
+     if (!verificationCode || !email) {
+          return res
+               .status(200)
+               .json(
+                    new ApiError(
+                         401,
+                         "Please provide verificationCode and email!"
+                    )
+               );
+     }
+     const user = await User.findOne({ email });
+     if (!user) {
+          return res
+               .status(200)
+               .json(new ApiError(401, "Verification Code Not Found!"));
+     }
+     if (user.verified === true) {
+          return res
+               .status(200)
+               .json(new ApiError(401, "User Already Verified!"));
+     }
+
+     return res
+          .status(200)
+          .json(new ApiResponse(201, null, "User can be verified!"));
+});
+
+export {
+     register,
+     login,
+     search,
+     getRandomUsers,
+     verifyUser,
+     validateUserToken,
+};
