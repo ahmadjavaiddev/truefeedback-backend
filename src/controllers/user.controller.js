@@ -23,7 +23,7 @@ const generateAccessAndRefereshTokens = async (userId) => {
 };
 
 const register = asyncHandler(async (req, res) => {
-     const { username,  email, password } = req.body;
+     const { username, email, password } = req.body;
      if (!username || !email || !password) {
           throw new ApiError(400, "Please fill in all fields");
      }
@@ -48,12 +48,14 @@ const register = asyncHandler(async (req, res) => {
 });
 
 const login = asyncHandler(async (req, res) => {
-     const { email, password } = req.body;
-     if (!email || !password) {
+     const { emailOrUsername, password } = req.body;
+     if (!emailOrUsername || !password) {
           throw new ApiError(401, "Please Fill all fields!");
      }
 
-     const user = await User.findOne({ email: email });
+     const user = await User.findOne({
+          $or: [{ email: emailOrUsername }, { username: emailOrUsername }],
+     });
      if (!user) {
           throw new ApiError(401, "User Not Found!");
      }
