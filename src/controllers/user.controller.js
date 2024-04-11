@@ -23,8 +23,8 @@ const generateAccessAndRefereshTokens = async (userId) => {
 };
 
 const register = asyncHandler(async (req, res) => {
-     const { username, fullName, email, password } = req.body;
-     if (!username || !fullName || !email || !password) {
+     const { username,  email, password } = req.body;
+     if (!username || !email || !password) {
           throw new ApiError(400, "Please fill in all fields");
      }
 
@@ -35,7 +35,6 @@ const register = asyncHandler(async (req, res) => {
 
      const user = await User.create({
           username: username,
-          fullName: fullName,
           email: email,
           password: password,
      });

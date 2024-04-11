@@ -17,12 +17,6 @@ const userSchema = new Schema(
                unique: true,
                trim: true,
           },
-          fullName: {
-               type: String,
-               required: [true, "FullName is Required!"],
-               trim: true,
-               index: true,
-          },
           password: {
                type: String,
                required: [true, "Password is required"],
