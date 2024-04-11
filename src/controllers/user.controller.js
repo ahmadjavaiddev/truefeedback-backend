@@ -63,7 +63,7 @@ const login = asyncHandler(async (req, res) => {
      }
 
      if (user.verified === false) {
-          throw new ApiError(401, "User is not verified!");
+          return res.status(401).json(new ApiError(401, "User is not verified!"));
      }
 
      const isPasswordValid = await user.isPasswordCorrect(password);
