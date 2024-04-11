@@ -62,6 +62,10 @@ const login = asyncHandler(async (req, res) => {
           throw new ApiError(401, "User Not Found!");
      }
 
+     if (user.verified === false) {
+          throw new ApiError(401, "User is not verified!");
+     }
+
      const isPasswordValid = await user.isPasswordCorrect(password);
      if (!isPasswordValid) {
           throw new ApiError(401, "Invalid Credentials!");
