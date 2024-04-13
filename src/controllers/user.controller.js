@@ -127,8 +127,6 @@ const getRandomUsers = asyncHandler(async (req, res) => {
           "-password -refreshToken -verificationCode -verificationCodeExpiry -verified -acceptMessages -createdAt -updatedAt"
      );
 
-     console.log("Random Users :: ", users);
-
      const shuffledUsers = users.sort(() => Math.random() - 0.5);
      const randomUsers = shuffledUsers.slice(0, 6);
 
