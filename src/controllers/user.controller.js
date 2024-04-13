@@ -46,7 +46,13 @@ const register = asyncHandler(async (req, res) => {
 
      return res
           .status(201)
-          .json(new ApiResponse(201, user, "User registered successfully"));
+          .json(
+               new ApiResponse(
+                    201,
+                    { success: true },
+                    "User registered successfully"
+               )
+          );
 });
 
 const login = asyncHandler(async (req, res) => {
@@ -64,7 +70,9 @@ const login = asyncHandler(async (req, res) => {
 
      if (user.verified === false) {
           // return res.status(401).json(new ApiResponse(401, null, "User is not verified!"));
-          throw new ApiError(401, "User is not verified!");
+          return res
+               .status(200)
+               .json(new ApiResponse(401, null, "Please verify your email!"));
      }
 
      const isPasswordValid = await user.isPasswordCorrect(password);
@@ -76,7 +84,7 @@ const login = asyncHandler(async (req, res) => {
           await generateAccessAndRefereshTokens(user._id);
 
      const loginUser = await User.findById(user._id).select(
-          "-password -refreshToken"
+          "-password -refreshToken -verificationCode -verificationCodeExpiry -acceptMessages -createdAt -updatedAt"
      );
 
      return (
