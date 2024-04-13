@@ -22,4 +22,9 @@ import messageRouter from "./routes/message.route.js";
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/messages", messageRouter);
 
+// CUSTOM ROUTE
+app.get("/", (req, res) => {
+     return res.status(200).json({ message: "Welcome to TrueFeedback API" });
+});
+
 export { app };

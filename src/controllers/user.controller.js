@@ -106,14 +106,20 @@ const search = asyncHandler(async (req, res) => {
 
      const users = await User.find({
           username: { $regex: value, $options: "i" },
-     });
+     }).select(
+          "-password -refreshToken -verificationCode -verificationCodeExpiry -verified -acceptMessages -createdAt -updatedAt"
+     );
      return res
           .status(200)
           .json(new ApiResponse(200, users, "User Search Successful"));
 });
 
 const getRandomUsers = asyncHandler(async (req, res) => {
-     const users = await User.find({});
+     const users = await User.find({}).select(
+          "-password -refreshToken -verificationCode -verificationCodeExpiry -verified -acceptMessages -createdAt -updatedAt"
+     );
+
+     console.log("Random Users :: ", users);
 
      const shuffledUsers = users.sort(() => Math.random() - 0.5);
      const randomUsers = shuffledUsers.slice(0, 6);

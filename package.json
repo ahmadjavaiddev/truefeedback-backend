@@ -1,7 +1,7 @@
 {
-     "name": "nodejs-starter-template",
+     "name": "truefeedback-api",
      "version": "1.0.0",
-     "description": "Node.js starter template with express, mongoose, cloudinary, bcrypt, jsonwebtoken, multer, cors, dotenv and prettier",
+     "description": "TrueFeedback API - where users can ask questions and get answers from the user anonymously without an account",
      "type": "module",
      "main": "index.js",
      "scripts": {
