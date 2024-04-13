@@ -24,13 +24,21 @@ const createMessage = asyncHandler(async (req, res) => {
 
      return res
           .status(201)
-          .json(new ApiResponse(201, message, "Message Added Successfully!"));
+          .json(
+               new ApiResponse(
+                    201,
+                    { success: true },
+                    "Message Added Successfully!"
+               )
+          );
 });
 
 const getMessages = asyncHandler(async (req, res) => {
      const userId = req.user._id;
 
-     const messages = await Message.find({ messageTo: userId });
+     const messages = await Message.find({ messageTo: userId }).select(
+          "-messageTo -updatedAt"
+     );
      messages.reverse();
 
      if (!messages) {
@@ -45,7 +53,9 @@ const getMessages = asyncHandler(async (req, res) => {
 const deleteMessage = asyncHandler(async (req, res) => {
      const { messageId } = req.params;
 
-     const message = await Message.findByIdAndDelete(messageId);
+     const message = await Message.findByIdAndDelete(messageId).select(
+          "-updatedAt -messageTo -createdAt -content"
+     );
      if (!message) {
           throw new ApiError(
                400,
@@ -80,7 +90,7 @@ const getAcceptMessageStatus = asyncHandler(async (req, res) => {
 
 const acceptMessage = asyncHandler(async (req, res) => {
      const userId = req.user._id;
-    
+
      const user = await User.findById(userId);
      user.acceptMessages = !user.acceptMessages;
      await user.save({ validateBeforeSave: false });
