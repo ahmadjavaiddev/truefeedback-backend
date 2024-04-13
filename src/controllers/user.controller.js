@@ -174,23 +174,18 @@ const verifyUser = asyncHandler(async (req, res) => {
 });
 
 const validateUserToken = asyncHandler(async (req, res) => {
-     const { verificationCode, email } = req.body;
-     if (!verificationCode || !email) {
+     const { email } = req.body;
+     if (!email) {
           return res
                .status(200)
-               .json(
-                    new ApiError(
-                         401,
-                         "Please provide verificationCode and email!"
-                    )
-               );
+               .json(new ApiError(401, "Please provide email!"));
      }
+
      const user = await User.findOne({ email });
      if (!user) {
-          return res
-               .status(200)
-               .json(new ApiError(401, "Verification Code Not Found!"));
+          return res.status(200).json(new ApiError(401, "User Not Found!"));
      }
+
      if (user.verified === true) {
           return res
                .status(200)
