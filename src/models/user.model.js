@@ -25,16 +25,6 @@ const userSchema = new Schema(
                type: Boolean,
                default: true,
           },
-          verificationCode: {
-               type: String,
-          },
-          verificationCodeExpiry: {
-               type: Date,
-          },
-          verified: {
-               type: Boolean,
-               default: false,
-          },
      },
      {
           timestamps: true,
@@ -57,24 +47,11 @@ userSchema.methods.generateAccessToken = function () {
           {
                _id: this._id,
                email: this.email,
-               username: this.username,
-               fullName: this.fullName,
+               username: this.username
           },
           process.env.ACCESS_TOKEN_SECRET,
           {
                expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
-          }
-     );
-};
-
-userSchema.methods.generateRefreshToken = function () {
-     return jwt.sign(
-          {
-               _id: this._id,
-          },
-          process.env.REFRESH_TOKEN_SECRET,
-          {
-               expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
           }
      );
 };
