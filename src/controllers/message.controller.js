@@ -9,17 +9,25 @@ import OpenAI from "openai";
 const createMessage = asyncHandler(async (req, res) => {
      const { content, username } = req.body;
      if ((!content, !username)) {
-          throw new ApiError(400, "content and username is Required!");
+          return res
+               .status(401)
+               .json(new ApiError(401, "Content and Username is Required!"));
      }
 
      const user = await User.findOne({ username: username });
+
+     if (!user || user.acceptMessages === false) {
+          return res.status(401).json(new ApiError(401, "User Not Found!"));
+     }
 
      const message = await Message.create({
           content: content,
           messageTo: user?._id,
      });
      if (!message) {
-          throw new ApiError(400, "Error while Added Message!");
+          return res
+               .status(400)
+               .json(new ApiError(400, "Error while Creating Message!"));
      }
 
      return res
@@ -28,7 +36,7 @@ const createMessage = asyncHandler(async (req, res) => {
                new ApiResponse(
                     201,
                     { success: true },
-                    "Message Added Successfully!"
+                    "Message Created Successfully!"
                )
           );
 });
@@ -42,7 +50,7 @@ const getMessages = asyncHandler(async (req, res) => {
      messages.reverse();
 
      if (!messages) {
-          throw new ApiError(404, "No Messages Found!");
+          return res.status(401).json(new ApiError(401, "No Messages Found!"));
      }
 
      return res
@@ -53,19 +61,21 @@ const getMessages = asyncHandler(async (req, res) => {
 const deleteMessage = asyncHandler(async (req, res) => {
      const { messageId } = req.params;
 
-     const message = await Message.findByIdAndDelete(messageId).select(
-          "-updatedAt -messageTo -createdAt -content"
-     );
+     const message = await Message.findByIdAndDelete(messageId);
      if (!message) {
-          throw new ApiError(
-               400,
-               "Message Not Found OR Error while deleting Message!"
-          );
+          return res
+               .status(401)
+               .json(
+                    new ApiError(
+                         400,
+                         "Message Not Found OR Error while deleting Message!"
+                    )
+               );
      }
 
      return res
           .status(200)
-          .json(new ApiResponse(200, message, "Message Deleted SuccessFully!"));
+          .json(new ApiResponse(200, null, "Message Deleted SuccessFully!"));
 });
 
 const getAcceptMessageStatus = asyncHandler(async (req, res) => {
@@ -73,7 +83,7 @@ const getAcceptMessageStatus = asyncHandler(async (req, res) => {
      const user = await User.findById(userId);
 
      if (!user) {
-          throw new ApiError(400, "User Not Found!");
+          return res.status(401).json(new ApiError(401, "User Not Found!"));
      }
 
      const status = user.acceptMessages;
@@ -92,14 +102,19 @@ const acceptMessage = asyncHandler(async (req, res) => {
      const userId = req.user._id;
 
      const user = await User.findById(userId);
+
      user.acceptMessages = !user.acceptMessages;
      await user.save({ validateBeforeSave: false });
 
      if (!user) {
-          throw new ApiError(
-               400,
-               "user Not Found OR Error while Updating accepting Message!"
-          );
+          return res
+               .status(400)
+               .json(
+                    new ApiError(
+                         400,
+                         "User Not Found OR Error while Updating accepting Message Status!"
+                    )
+               );
      }
 
      return res
@@ -118,7 +133,7 @@ const getMessageStatus = asyncHandler(async (req, res) => {
 
      const user = await User.findOne({ username });
      if (!user) {
-          throw new ApiError(400, "user Not Found!");
+          return res.status(401).json(new ApiError(401, "User Not Found!"));
      }
 
      return res
@@ -140,7 +155,9 @@ const generateMessages = asyncHandler(async (req, res) => {
           { new: true }
      );
 
-     const openai = new OpenAI();
+     const openai = new OpenAI({
+          apiKey: process.env.OPENAI_API_KEY,
+     });
      const completions = await openai.chat.completions.create({
           temperature: 0.7,
           n: 3,

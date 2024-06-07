@@ -1,8 +1,8 @@
-const DB_NAME = "ecommerce";
+const DB_NAME = "truefeedback";
 
-const cokkiesOptions = {
+const cookiesOptions = {
      httpOnly: true,
      secure: true,
 };
 
-export { DB_NAME, cokkiesOptions };
+export { DB_NAME, cookiesOptions };
