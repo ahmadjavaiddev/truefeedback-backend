@@ -137,6 +137,4 @@ export {
      login,
      search,
      getRandomUsers,
-     verifyUser,
-     validateUserToken,
 };
