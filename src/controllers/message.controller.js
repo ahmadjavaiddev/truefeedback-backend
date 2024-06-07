@@ -43,11 +43,12 @@ const createMessage = asyncHandler(async (req, res) => {
 
 const getMessages = asyncHandler(async (req, res) => {
      const userId = req.user._id;
-
+     console.log(userId);
      const messages = await Message.find({ messageTo: userId }).select(
           "-messageTo -updatedAt"
      );
      messages.reverse();
+     console.log("messages ::", messages);
 
      if (!messages) {
           return res.status(401).json(new ApiError(401, "No Messages Found!"));
