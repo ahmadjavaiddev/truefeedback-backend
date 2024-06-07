@@ -12,7 +12,7 @@ import {
 
 const router = Router();
 
-router.route("/").get(verifyJWT, getMessages);
+router.route("/getmessages").get(verifyJWT, getMessages);
 router.route("/create").post(createMessage);
 router.route("/delete/:messageId").delete(verifyJWT, deleteMessage);
 router.route("/accept").get(verifyJWT, acceptMessage);
